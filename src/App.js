@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ProjectService from "./API/ProjectService";
 import TaskService from "./API/TaskService";
 import "./styles/App.css";
+import TaskList from "./components/TaskList";
+import Spinner from "./components/UI/Spinner/Spinner";
 
 function App() {
   const [projects, setProjects] = useState([]);
@@ -50,8 +52,9 @@ function App() {
 
   const renderTask = () => {
     if (project) {
-      if (isTasksLoading) return <p>loader</p>
-      else if (tasks.length) return tasks.map((task)=><p>{task.body}</p>)
+      if (isTasksLoading) return <Spinner />
+      // else if (tasks.length) return tasks.map((task)=><p>{task.body}</p>)
+      else if (tasks.length) return <TaskList tasks={tasks}/>
         else return <p>no tasks</p>
     } else {
       return <p>select a project</p>
