@@ -53,12 +53,12 @@ function App() {
   const renderTask = () => {
     if (project) {
       if (isTasksLoading) return <Spinner />
-      // else if (tasks.length) return tasks.map((task)=><p>{task.body}</p>)
       else if (tasks.length) return <TaskList tasks={tasks}/>
-        else return <p>no tasks</p>
-    } else {
-      return <p>select a project</p>
-    }
+      
+      return <p>no tasks</p>
+    } 
+    
+    return <p>select a project</p>
   };
 
   return (
