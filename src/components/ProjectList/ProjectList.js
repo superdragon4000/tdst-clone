@@ -4,6 +4,7 @@ import Spinner from "../UI/Spinner/Spinner";
 const ProjectList = ({isProjectsLoading, projects, setActiveProject}) => {
   return (
     <div className="projects">
+      <h2>Projects</h2>
       {isProjectsLoading ? (
         <Spinner />
       ) : (

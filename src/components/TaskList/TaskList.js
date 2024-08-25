@@ -20,7 +20,10 @@ const TaskList = ({ tasks, project, isTasksLoading }) => {
     return <p>select a project</p>;
   };
   return (
-    <div className="tasks">{renderTask()}</div>
+    <div className="tasks">
+      <h2>Tasks to do:</h2>
+      {renderTask()}
+    </div>
   );
 };
 
