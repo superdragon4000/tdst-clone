@@ -44,7 +44,7 @@
 }
 
 .project__link.active {
-  color: aquamarine;
+  color: rgb(143, 0, 0);
 }
 
 .tasks {

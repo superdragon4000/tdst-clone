@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
 import TaskService from "../../API/TaskService";
 
-const TaskList = ({ tasks, project, isTasksLoading }) => {
+const TaskList = ({ tasks, project, isTasksLoading, setIsTasksUpdated }) => {
   const [newTaskBody, setNewTaskBody] = useState("");
 
   const handleTaskSubmit = async (e) => {
@@ -10,6 +10,7 @@ const TaskList = ({ tasks, project, isTasksLoading }) => {
     try {
       const response = await TaskService.create(newTaskBody, project.id);
       setNewTaskBody('')
+      setIsTasksUpdated(false)
       console.log("Data submitted:", response.data);
     } catch (error) {
       console.error("Error submitting data:", error);

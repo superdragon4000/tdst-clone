@@ -9,6 +9,8 @@ const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [isProjectsUpdated, setIsProjectsUpdated] = useState(false)
+  const [isTasksUpdated, setIsTasksUpdated] = useState(false)
 
   const [fetchProjects, isProjectsLoading, projectsError] = useFetching(
     async () => {
@@ -23,11 +25,16 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    fetchProjects();
-    if (project) {
-      fetchTasks();
+    if (!isProjectsUpdated) {
+      fetchProjects();
+      setIsProjectsUpdated(true)
     }
-  }, [project]);
+    if (project || !isTasksUpdated) {
+      fetchTasks();
+      setIsTasksUpdated(true)
+
+    }
+  }, [project, isProjectsUpdated, isTasksUpdated]);
 
   async function setActiveProject(e) {
     projects.forEach((el) => {
@@ -47,11 +54,13 @@ const Dashboard = () => {
         isProjectsLoading={isProjectsLoading}
         projects={projects}
         setActiveProject={setActiveProject}
+        setIsProjectsUpdated={setIsProjectsUpdated}
       />
       <TaskList
         tasks={tasks}
         project={project}
         isTasksLoading={isTasksLoading}
+        setIsTasksUpdated={setIsTasksUpdated}
       />
     </div>
   );

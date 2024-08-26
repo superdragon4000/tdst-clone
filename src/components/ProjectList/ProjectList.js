@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
 import ProjectService from "../../API/ProjectService";
 
-const ProjectList = ({isProjectsLoading, projects, setActiveProject}) => {
+const ProjectList = ({isProjectsLoading, projects, setActiveProject, setIsProjectsUpdated}) => {
   const [newProjectName, setNewProjectName] = useState('')
 
   const handleProjectSubmit = async (e) => {
@@ -10,6 +10,7 @@ const ProjectList = ({isProjectsLoading, projects, setActiveProject}) => {
     try {
       const response = await ProjectService.create(newProjectName)
       setNewProjectName('')
+      setIsProjectsUpdated(false)
       console.log('Data submitted:', response.data);
     } catch (error) {
       console.error('Error submitting data:', error);
