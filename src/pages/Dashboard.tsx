@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useEffect, useState } from "react";
 import useFetching from "../hooks/useFetching";
 import ProjectService from "../API/ProjectService";

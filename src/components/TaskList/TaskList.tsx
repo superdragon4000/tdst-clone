@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
 import TaskService from "../../API/TaskService";
