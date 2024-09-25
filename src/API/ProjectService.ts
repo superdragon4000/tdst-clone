@@ -20,7 +20,7 @@ export default class ProjectService {
       }
       console.log(error.config);
     });
-    return response;
+    if (response) return response;
   }
 
   static async create(name: any) {

@@ -1,9 +1,25 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+
+export type Project = {
+  created_at: Date;
+  updated_at: Date;
+  id: number;
+  name: string;
+}
+
+export type Task = {
+  body: string;
+  created_at: Date;
+  id: number;
+  isDone: Boolean;
+  project: Project;
+  updated_at: Date;
+}
 
 export default class TaskService {
   static async getAllById(id: any) {
     const response = await axios
-      .get("http://localhost:5000/task/all/" + id)
+      .get<Task[]>("http://localhost:5000/task/all/" + id)
       .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
@@ -21,8 +37,8 @@ export default class TaskService {
           console.log("Error", error.message);
         }
         console.log(error.config);
-      });
-    return response;
+      })
+      if (response) return response.data
   }
 
   static async create(body: any, projectId: any) {

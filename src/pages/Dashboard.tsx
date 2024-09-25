@@ -1,29 +1,31 @@
-// @ts-nocheck
-
 import React, { useEffect, useState } from "react";
 import useFetching from "../hooks/useFetching";
 import ProjectService from "../API/ProjectService";
-import TaskService from "../API/TaskService";
+import TaskService, { Project, Task } from "../API/TaskService";
 import ProjectList from "../components/ProjectList/ProjectList";
 import TaskList from "../components/TaskList/TaskList";
 
 const Dashboard = () => {
-  const [projects, setProjects] = useState([]);
-  const [project, setProject] = useState(null);
-  const [tasks, setTasks] = useState([]);
-  const [isProjectsUpdated, setIsProjectsUpdated] = useState(false)
-  const [isTasksUpdated, setIsTasksUpdated] = useState(false)
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isProjectsUpdated, setIsProjectsUpdated] = useState<Boolean>(false)
+  const [isTasksUpdated, setIsTasksUpdated] = useState<Boolean>(false)
 
   const [fetchProjects, isProjectsLoading, projectsError] = useFetching(
     async () => {
       const response = await ProjectService.getAll();
-      setProjects(response.data);
+      if (response) setProjects(response.data);
     }
   );
 
   const [fetchTasks, isTasksLoading, tasksError] = useFetching(async () => {
-    const response = await TaskService.getAllById(project.id);
-    setTasks(response.data);
+    if (project) {
+      const response = await TaskService.getAllById(project.id);
+      if (response) {
+        setTasks(response);
+      }
+    }
   });
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const Dashboard = () => {
     }
   }, [project, isProjectsUpdated, isTasksUpdated]);
 
-  async function setActiveProject(e) {
+  async function setActiveProject(e: any) {
     projects.forEach((el) => {
       if (el.name === e.target.innerText) {
         setProject(el);

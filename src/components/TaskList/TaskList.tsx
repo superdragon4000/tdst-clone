@@ -1,18 +1,25 @@
-// @ts-nocheck
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
-import TaskService from "../../API/TaskService";
+import TaskService, { Project, Task } from "../../API/TaskService";
 
-const TaskList = ({ tasks, project, isTasksLoading, setIsTasksUpdated }) => {
-  const [newTaskBody, setNewTaskBody] = useState("");
+interface TaskListProps {
+  tasks: Task[];
+  project: Project | null;
+  isTasksLoading: boolean;
+  setIsTasksUpdated: Dispatch<SetStateAction<Boolean>>;
+}
 
-  const handleTaskSubmit = async (e) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, project, isTasksLoading, setIsTasksUpdated }) => {
+  const [newTaskBody, setNewTaskBody] = useState<string>("");
+
+  const handleTaskSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     try {
-      const response = await TaskService.create(newTaskBody, project.id);
+      if (project) {
+        const response = await TaskService.create(newTaskBody, project.id);
+      }
       setNewTaskBody('')
       setIsTasksUpdated(false)
-      console.log("Data submitted:", response.data);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -33,7 +40,7 @@ const TaskList = ({ tasks, project, isTasksLoading, setIsTasksUpdated }) => {
                 value={newTaskBody}
                 type="text"
               />
-              <button onClick={(e) => handleTaskSubmit(e)}>Add task</button>
+              <button onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleTaskSubmit(e)}>Add task</button>
             </form>
           </div>
         );

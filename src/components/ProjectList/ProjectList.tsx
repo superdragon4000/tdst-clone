@@ -1,20 +1,24 @@
-// @ts-nocheck
-
-
-import React, { useState } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
 import ProjectService from "../../API/ProjectService";
+import { Project } from "../../API/TaskService";
 
-const ProjectList = ({isProjectsLoading, projects, setActiveProject, setIsProjectsUpdated}) => {
+interface ProjectListProps {
+  isProjectsLoading: boolean;
+  projects: Project[];
+  setActiveProject: any;
+  setIsProjectsUpdated: Dispatch<SetStateAction<Boolean>>;
+}
+
+const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading, projects, setActiveProject, setIsProjectsUpdated}) => {
   const [newProjectName, setNewProjectName] = useState('')
 
-  const handleProjectSubmit = async (e) => {
+  const handleProjectSubmit = async (e: any) => {
     e.preventDefault();
     try {
       const response = await ProjectService.create(newProjectName)
       setNewProjectName('')
       setIsProjectsUpdated(false)
-      console.log('Data submitted:', response.data);
     } catch (error) {
       console.error('Error submitting data:', error);
     }
