@@ -4,18 +4,26 @@ import ProjectService from "../API/ProjectService";
 import TaskService, { Project, Task } from "../API/TaskService";
 import ProjectList from "../components/ProjectList/ProjectList";
 import TaskList from "../components/TaskList/TaskList";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { setProjects, setProject, setIsProjectsUpdated } from '../app/reducers/ProjectSlice';
 
-const Dashboard = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [project, setProject] = useState<Project | null>(null);
+const Dashboard: React.FC = () => {
+  // const [projects, setProjects] = useState<Project[]>([]);
+  // const [project, setProject] = useState<Project | null>(null);
+  // const [isProjectsUpdated, setIsProjectsUpdated] = useState<Boolean>(false)
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isProjectsUpdated, setIsProjectsUpdated] = useState<Boolean>(false)
   const [isTasksUpdated, setIsTasksUpdated] = useState<Boolean>(false)
+
+
+  // const dispatch = useDispatch<AppDispatch>()
+  const { project, projects, isProjectsUpdated } = useSelector((state: RootState) => state.project)
+  const dispatch = useDispatch()
 
   const [fetchProjects, isProjectsLoading, projectsError] = useFetching(
     async () => {
       const response = await ProjectService.getAll();
-      if (response) setProjects(response.data);
+      if (response) dispatch(setProjects(response.data));
     }
   );
 
@@ -31,7 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!isProjectsUpdated) {
       fetchProjects();
-      setIsProjectsUpdated(true)
+      dispatch(setIsProjectsUpdated(true))
     }
     if (project || !isTasksUpdated) {
       fetchTasks();
@@ -43,7 +51,7 @@ const Dashboard = () => {
   async function setActiveProject(e: any) {
     projects.forEach((el) => {
       if (el.name === e.target.innerText) {
-        setProject(el);
+        dispatch(setProject(el));
       }
     });
 
@@ -56,9 +64,7 @@ const Dashboard = () => {
     <div className="App">
       <ProjectList
         isProjectsLoading={isProjectsLoading}
-        projects={projects}
         setActiveProject={setActiveProject}
-        setIsProjectsUpdated={setIsProjectsUpdated}
       />
       <TaskList
         tasks={tasks}
@@ -67,6 +73,7 @@ const Dashboard = () => {
         setIsTasksUpdated={setIsTasksUpdated}
       />
     </div>
+    
   );
 };
 
