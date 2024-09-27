@@ -18,15 +18,6 @@ export const projectSlice = createSlice({
   name: "project",
   initialState,
   reducers: {
-    // setProject: (state, action: PayloadAction<Project | null>) => {
-    //   state.project = action.payload;
-    // },
-    // setProjects: (state, action: PayloadAction<Project[]>) => {
-    //   state.projects = action.payload;
-    // },
-    // setIsProjectsUpdated: (state, action: PayloadAction<boolean>) => {
-    //   state.isProjectsUpdated = action.payload;
-    // },
     setProjects: (state, action: PayloadAction<Project[]>) => {
       state.projects = action.payload;
     },

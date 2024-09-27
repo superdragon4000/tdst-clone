@@ -1,24 +1,21 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
 import ProjectService from "../../API/ProjectService";
-import { Project } from "../../API/TaskService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
 import { setIsProjectsUpdated } from '../../app/reducers/ProjectSlice';
+import { setProject } from "../../app/reducers/ProjectSlice";
 
 
 interface ProjectListProps {
   isProjectsLoading: boolean;
-  // projects: Project[];
-  setActiveProject: any;
-  // setIsProjectsUpdated: Dispatch<SetStateAction<Boolean>>;
 }
 
-const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading, setActiveProject}) => {
+const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading}) => {
   const [newProjectName, setNewProjectName] = useState('')
 
   const dispatch = useDispatch<AppDispatch>()
-  const { project, projects, isProjectsUpdated } = useSelector((state: RootState) => state.project)
+  const { projects } = useSelector((state: RootState) => state.project)
 
   const handleProjectSubmit = async (e: any) => {
     e.preventDefault();
@@ -30,6 +27,19 @@ const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading, setActivePr
       console.error('Error submitting data:', error);
     }
   };
+
+  async function setActiveProject(e: any) {
+    projects.forEach((el) => {
+      if (el.name === e.target.innerText) {
+        dispatch(setProject(el));
+      }
+    });
+
+    document
+      .querySelectorAll(".project__link")
+      .forEach((btn) => btn.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+  }
 
   return (
     <div className="projects">

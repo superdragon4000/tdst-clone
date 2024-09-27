@@ -1,16 +1,20 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, {  useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
-import TaskService, { Project, Task } from "../../API/TaskService";
+import TaskService from "../../API/TaskService";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../app/store";
+import { useDispatch } from "react-redux";
+import { setIsTasksUpdated } from "../../app/reducers/TaskSlice";
 
 interface TaskListProps {
-  tasks: Task[];
-  project: Project | null;
   isTasksLoading: boolean;
-  setIsTasksUpdated: Dispatch<SetStateAction<Boolean>>;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, project, isTasksLoading, setIsTasksUpdated }) => {
+const TaskList: React.FC<TaskListProps> = ({ isTasksLoading }) => {
   const [newTaskBody, setNewTaskBody] = useState<string>("");
+  const {tasks} = useSelector((state: RootState) => state.task)
+  const {project} = useSelector((state: RootState) => state.project)
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleTaskSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -19,7 +23,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, project, isTasksLoading, set
         const response = await TaskService.create(newTaskBody, project.id);
       }
       setNewTaskBody('')
-      setIsTasksUpdated(false)
+      dispatch(setIsTasksUpdated(false))
     } catch (error) {
       console.error("Error submitting data:", error);
     }
