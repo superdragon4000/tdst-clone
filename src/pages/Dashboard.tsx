@@ -1,42 +1,25 @@
 import React, { useEffect } from "react";
-import useFetching from "../hooks/useFetching";
-import ProjectService from "../API/ProjectService";
-import TaskService from "../API/TaskService";
 import ProjectList from "../components/ProjectList/ProjectList";
 import TaskList from "../components/TaskList/TaskList";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
-import { setProjects, setIsProjectsUpdated } from '../app/reducers/ProjectSlice';
-import { setTasks, setIsTasksUpdated } from "../app/reducers/TaskSlice";
+import { setIsProjectsUpdated } from '../app/reducers/ProjectSlice';
+import { setIsTasksUpdated } from "../app/reducers/TaskSlice";
+import { fetchAllTasksByProjectId, fetchProjects } from "../app/reducers/ActionCreators";
 
 const Dashboard: React.FC = () => {
-  const { project, isProjectsUpdated } = useSelector((state: RootState) => state.project)
-  const { isTasksUpdated } = useSelector((state: RootState) => state.task)
+  const { project, isProjectsUpdated } = useSelector((state: RootState) => state.projectReducer)
+  const { isTasksUpdated } = useSelector((state: RootState) => state.taskReducer)
   const dispatch = useDispatch<AppDispatch>()
-
-  const [fetchProjects, isProjectsLoading, projectsError] = useFetching(
-    async () => {
-      const response = await ProjectService.getAll();
-      if (response) dispatch(setProjects(response.data));
-    }
-  );
-
-  const [fetchTasks, isTasksLoading, tasksError] = useFetching(async () => {
-    if (project) {
-      const response = await TaskService.getAllById(project.id);
-      if (response) {
-        dispatch(setTasks(response));
-      }
-    }
-  });
 
   useEffect(() => {
     if (!isProjectsUpdated) {
-      fetchProjects();
+      dispatch(fetchProjects())
       dispatch(setIsProjectsUpdated(true))
     }
     if (project || !isTasksUpdated) {
-      fetchTasks();
+      if (project) 
+      dispatch(fetchAllTasksByProjectId(project.id))
       dispatch(setIsTasksUpdated(true))
     }
   }, [project, isProjectsUpdated, isTasksUpdated]);
@@ -44,14 +27,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="App">
-      <ProjectList
-        isProjectsLoading={isProjectsLoading}
-      />
-      <TaskList
-        isTasksLoading={isTasksLoading}
-      />
+      <ProjectList/>
+      <TaskList/>
     </div>
-    
   );
 };
 

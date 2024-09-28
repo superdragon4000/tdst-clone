@@ -1,26 +1,22 @@
 import React, {  useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
-import TaskService from "../../API/TaskService";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
 import { useDispatch } from "react-redux";
 import { setIsTasksUpdated } from "../../app/reducers/TaskSlice";
+import { createTask } from "../../app/reducers/ActionCreators";
 
-interface TaskListProps {
-  isTasksLoading: boolean;
-}
-
-const TaskList: React.FC<TaskListProps> = ({ isTasksLoading }) => {
+const TaskList: React.FC= () => {
   const [newTaskBody, setNewTaskBody] = useState<string>("");
-  const {tasks} = useSelector((state: RootState) => state.task)
-  const {project} = useSelector((state: RootState) => state.project)
+  const {tasks, isTasksLoading} = useSelector((state: RootState) => state.taskReducer)
+  const {project} = useSelector((state: RootState) => state.projectReducer)
   const dispatch = useDispatch<AppDispatch>();
 
   const handleTaskSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     try {
       if (project) {
-        const response = await TaskService.create(newTaskBody, project.id);
+        dispatch(createTask({body: newTaskBody, projectId: project.id}))
       }
       setNewTaskBody('')
       dispatch(setIsTasksUpdated(false))

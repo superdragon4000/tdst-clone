@@ -1,26 +1,21 @@
 import React, { useState } from "react";
 import Spinner from "../UI/Spinner/Spinner";
-import ProjectService from "../../API/ProjectService";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
 import { setIsProjectsUpdated } from '../../app/reducers/ProjectSlice';
 import { setProject } from "../../app/reducers/ProjectSlice";
+import { createProject } from "../../app/reducers/ActionCreators";
 
-
-interface ProjectListProps {
-  isProjectsLoading: boolean;
-}
-
-const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading}) => {
+const ProjectList: React.FC = () => {
   const [newProjectName, setNewProjectName] = useState('')
 
   const dispatch = useDispatch<AppDispatch>()
-  const { projects } = useSelector((state: RootState) => state.project)
+  const { projects, error, isProjectsLoading } = useSelector((state: RootState) => state.projectReducer)
 
   const handleProjectSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await ProjectService.create(newProjectName)
+      dispatch(createProject(newProjectName))
       setNewProjectName('')
       dispatch(setIsProjectsUpdated(false))
     } catch (error) {
@@ -57,6 +52,7 @@ const ProjectList: React.FC<ProjectListProps> = ({isProjectsLoading}) => {
           </p>
         ))
       )}
+      {error && <h1>{error}</h1>}
       <form action="">
         <input onChange={e => setNewProjectName(e.target.value)} value={newProjectName} type="text" />
         <button onClick={e => handleProjectSubmit(e)}>Add project</button>
